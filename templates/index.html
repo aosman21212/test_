@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Run Command</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Run Command</h1>
+        <form id="command-form">
+            <button type="submit" style="
+            background-color: crimson;
+        ">Run Command</button>        </form>
+    </div>
+    <div class="result-container">
+        <h2>Command Result</h2>
+        <div id="progress-bar-container">
+            <div id="progress-bar"></div>
+        </div>
+        <pre id="result"></pre>
+    </div>
+    <script>
+        $(document).ready(function() {
+            $('#command-form').submit(function(event) {
+                event.preventDefault();
+                $('#result').text('Running command...');
+                
+                // Simulate progress (replace with actual progress logic)
+                let progress = 0;
+                const interval = 500;
+                const progressBar = $('#progress-bar');
+                const progressBarContainer = $('#progress-bar-container');
+                const maxProgress = 100;
+
+                function updateProgressBar() {
+                    if (progress < maxProgress) {
+                        progress += 10; // Simulated progress increment
+                        progressBar.css('width', progress + '%');
+                        setTimeout(updateProgressBar, interval);
+                    } else {
+                        progressBarContainer.hide(); // Hide the progress bar when done
+                        $.ajax({
+                            url: '/run_command',
+                            type: 'POST',
+                            success: function(response) {
+                                $('#result').text(response.result);
+                            }
+                        });
+                    }
+                }
+
+                updateProgressBar();
+            });
+        });
+    </script>
+</body>
+</html>
